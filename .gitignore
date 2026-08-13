@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+node_modules/
+dist/
+.playwright-cli/
+*.log
+.env
+.env.*
+!.env.example
+*.csv
+*.xlsx
+*.xls

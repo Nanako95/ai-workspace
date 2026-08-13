@@ -1,0 +1,30 @@
+/* Reflow the workbench before the viewport becomes too narrow for a sidebar. */
+@media (max-width: 900px){
+  .app{display:grid;grid-template-columns:180px minmax(0,1fr);min-height:100vh}
+  .sidebar{height:auto;min-height:100vh;width:auto;padding:20px 10px;display:flex;flex-direction:column;align-items:stretch;gap:0;overflow:visible}
+  .brand{padding:0 8px 28px;gap:9px;flex:0 0 auto}.brandmark{width:34px;height:34px}.brand strong{font-size:15px}.brand span{font-size:9px}
+  .sidebar nav{display:grid;grid-template-columns:1fr;align-items:stretch;gap:8px;min-width:0}.sidebar nav button{width:auto;height:70px;flex:0 0 auto;padding:9px 4px;gap:6px;border-radius:7px}.sidebar nav button svg{width:19px;height:19px}.sidebar nav button{font-size:9px}
+  .side-note{display:block}
+  main{min-width:0;width:100%}
+  header{height:70px;padding:0 20px}
+  .task-tabs{padding:0 20px}
+  .workspace,.quality{padding:14px 18px}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .work-grid{grid-template-columns:clamp(180px,30%,260px) minmax(0,1fr);gap:10px}
+  .table-panel{order:1}.rules-panel{order:2}
+  .table-wrap{max-height:460px;overflow:auto}
+  .table-wrap table{min-width:720px}
+  .rules-panel{width:100%;min-width:0}.rule-list{grid-template-columns:1fr}
+}
+@media (max-width: 600px){
+  .app{grid-template-columns:92px minmax(0,1fr)}
+  .sidebar{height:auto;min-height:100vh;padding:14px 6px;align-items:stretch;gap:0;overflow:visible}
+  .brand{display:flex;justify-content:center;padding:0 0 20px}.brand>div:last-child{display:none}.brandmark{width:34px;height:34px}
+  .sidebar nav{display:grid;gap:5px}.sidebar nav button{width:100%;height:64px;font-size:8px;flex-direction:column;gap:5px;padding:5px}.sidebar nav button svg{width:18px;height:18px}
+  .side-note{display:none}
+  header{height:68px;padding:0 12px}header h1{font-size:16px}header p{font-size:10px;margin-top:3px}.header-actions{gap:4px}.header-actions .icon-btn,.header-actions .primary{width:32px;height:32px;padding:0}.header-actions .primary{font-size:0}
+  .task-tabs{height:32px;padding:0 12px}.task-tab{height:26px;font-size:9px}
+  .workspace,.quality{padding:10px}.stats{gap:7px;margin-bottom:9px}.stat{padding:10px;gap:8px}.stat-icon{width:29px;height:29px}.stat strong{font-size:16px}.stat span{font-size:9px}
+  .work-grid{grid-template-columns:minmax(172px,38%) minmax(0,1fr);gap:8px}
+  .rule-list{grid-template-columns:1fr}.table-toolbar{padding:10px 9px;flex-direction:row;align-items:center}.table-toolbar h3{font-size:12px}.table-toolbar p{font-size:9px}.search{width:clamp(88px,42%,170px);flex:0 1 170px;height:30px}.table-wrap{max-height:380px}.rules-panel{padding:10px}.rules-panel .panel-title h3{font-size:12px}.rules-panel .panel-title p{font-size:9px}
+}

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.playwright-cli/
+.dev-server.pid
+*.log
+.env
+.env.*
+!.env.example
