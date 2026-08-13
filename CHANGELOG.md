@@ -27,3 +27,9 @@
 - CHANGELOG.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-13 - Add reusable workspace application scenarios template
+- Target: documents\templates\workspace-application-scenarios.md
+- Changed paths:
+- documents/templates/workspace-application-scenarios.md
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
