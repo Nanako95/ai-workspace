@@ -33,3 +33,9 @@
 - documents/templates/workspace-application-scenarios.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-13 - Remove personal data from sample CSV and anonymize demo records
+- Target: platform\dataflow-studio
+- Changed paths:
+- platform/dataflow-studio/src/main.jsx
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
