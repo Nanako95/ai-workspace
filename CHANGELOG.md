@@ -45,3 +45,9 @@
 - platform/dataflow-studio/src/main.jsx
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-13 - Expand explainable data quality scoring rules
+- Target: platform\dataflow-studio
+- Changed paths:
+- platform/dataflow-studio/src/main.jsx
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
