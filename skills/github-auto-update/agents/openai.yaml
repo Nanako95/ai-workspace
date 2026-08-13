@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Auto Update"
+  short_description: "Publish verified GitHub updates with changelogs"
+  default_prompt: "Use $github-auto-update to verify, document, commit, and publish this repository update."
