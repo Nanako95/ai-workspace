@@ -17,4 +17,6 @@
 
 DataFlow 由根目录的 GitHub Actions 工作流自动发布到 GitHub Pages。
 
+完整的在线使用、本地运行和版本更新方法见 `使用与更新指南.md`。
+
 不得提交密码、Token、客户数据、真实业务 CSV 或公司敏感资料。
