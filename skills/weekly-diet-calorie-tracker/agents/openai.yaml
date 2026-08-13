@@ -1,0 +1,4 @@
+interface:
+  display_name: "Weekly Diet Calorie Tracker"
+  short_description: "Track daily food calories and weekly diet trends"
+  default_prompt: "记录今天的饮食并核算热量，更新本周账本"

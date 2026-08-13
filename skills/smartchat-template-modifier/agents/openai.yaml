@@ -1,0 +1,4 @@
+interface:
+  display_name: "模板修改skill"
+  short_description: "批量或单条修改 SmartChat WABA 模板内容。"
+  default_prompt: "Use $smartchat-template-modifier to update SmartChat WABA templates from Excel rows or supplied text."

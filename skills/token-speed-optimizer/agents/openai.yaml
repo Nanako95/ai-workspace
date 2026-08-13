@@ -1,0 +1,4 @@
+interface:
+  display_name: "Token Speed Optimizer"
+  short_description: "Reduce token use and speed up Codex work"
+  default_prompt: "Use token-speed-optimizer to keep responses concise, avoid unnecessary file reads, and prefer fast deterministic checks."

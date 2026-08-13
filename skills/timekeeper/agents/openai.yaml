@@ -1,0 +1,4 @@
+interface:
+  display_name: "Timekeeper"
+  short_description: "Check local time and schedule delayed Codex callbacks."
+  default_prompt: "Use $timekeeper to schedule a reminder or run a task after a delay."

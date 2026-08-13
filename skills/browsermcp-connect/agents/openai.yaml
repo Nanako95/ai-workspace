@@ -1,0 +1,7 @@
+interface:
+  display_name: "BrowserMCP Connect"
+  short_description: "Connect BrowserMCP through the Chrome extension menu."
+  default_prompt: "Use $browsermcp-connect to reconnect the BrowserMCP Chrome extension."
+
+policy:
+  allow_implicit_invocation: true

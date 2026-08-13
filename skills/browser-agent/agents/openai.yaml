@@ -1,0 +1,4 @@
+interface:
+  display_name: "Browser Agent"
+  short_description: "Reuse isolated Chrome for browser automation."
+  default_prompt: "Use $browser-agent to open a persistent isolated Chrome browser for automation."

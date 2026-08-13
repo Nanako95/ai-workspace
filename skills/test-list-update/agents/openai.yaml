@@ -1,0 +1,4 @@
+interface:
+  display_name: "测试名单更新"
+  short_description: "对比 DataWorks 全量名单和测试名单，更新 Excel 人数表并补齐缺失测试名单。"
+  default_prompt: "Use $test-list-update to update the latest WABA test list workbook from new DataWorks and test-list files."

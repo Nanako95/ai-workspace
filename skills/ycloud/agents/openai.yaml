@@ -1,0 +1,5 @@
+interface:
+  display_name: "Ycloud Skill"
+  short_description: "Create Ycloud WABA templates from Excel rows."
+  default_prompt: "Use $ycloud to create a Ycloud WABA template from an Excel row."
+
