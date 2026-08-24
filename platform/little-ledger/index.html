@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f4ef" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="manifest.webmanifest" />
   <title>小账本 · 每一笔都清楚</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,7 +24,7 @@
   </div>
 
   <div id="appView" class="app-shell hidden">
-    <header class="topbar"><div><div class="brand">小账本</div><div id="greeting" class="muted"></div></div><button id="logoutBtn" class="icon-btn" title="切换账户"><i data-lucide="log-out"></i></button></header>
+    <header class="topbar"><div><div class="brand">小账本</div><div id="greeting" class="muted"></div></div><div class="topbar-actions"><button id="installBtn" class="icon-btn hidden" title="安装到手机"><i data-lucide="download"></i></button><button id="logoutBtn" class="icon-btn" title="切换账户"><i data-lucide="log-out"></i></button></div></header>
     <main>
       <section id="homeTab" class="tab-page active">
         <div class="hero-row"><div><p class="eyebrow">OVERVIEW · <span id="currentMonth"></span></p><h2>你好，<span id="userName"></span></h2></div><button id="quickAdd" class="round-add" title="新增账目"><i data-lucide="plus"></i></button></div>
@@ -32,7 +35,7 @@
         <div id="recentList" class="transaction-list"></div>
       </section>
 
-      <section id="ledgerTab" class="tab-page"><div class="page-title"><div><p class="eyebrow">LEDGER</p><h2>所有账目</h2></div><div class="capture-actions"><button id="cameraBtn" class="outline-btn"><i data-lucide="camera"></i> 拍照识别</button><button id="uploadBtn" class="outline-btn"><i data-lucide="image-up"></i> 选择截图</button><input id="receiptInput" type="file" accept="image/*" hidden></div></div><div class="filter-row"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="expense">支出</button><button class="filter" data-filter="income">收入</button><select id="categoryFilter"><option value="all">全部分类</option></select></div><div id="ledgerList" class="transaction-list full"></div></section>
+      <section id="ledgerTab" class="tab-page"><div class="page-title"><div><p class="eyebrow">LEDGER</p><h2>所有账目</h2></div><div class="capture-actions"><button id="cameraBtn" class="outline-btn"><i data-lucide="camera"></i> 拍照识别</button><button id="uploadBtn" class="outline-btn"><i data-lucide="image-up"></i> 选择截图</button><button id="shareImportBtn" class="outline-btn"><i data-lucide="share-2"></i> 分享导入</button><input id="receiptInput" type="file" accept="image/*" hidden></div></div><div class="filter-row"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="expense">支出</button><button class="filter" data-filter="income">收入</button><select id="categoryFilter"><option value="all">全部分类</option></select></div><div id="ledgerList" class="transaction-list full"></div></section>
 
       <section id="dashboardTab" class="tab-page"><div class="page-title"><div><p class="eyebrow">INSIGHTS</p><h2>消费看板</h2></div></div><div class="period-tabs"><button class="period active" data-period="month">月度</button><button class="period" data-period="year">年度</button><select id="periodSelect"></select></div><div id="dashboardContent"></div></section>
     </main>

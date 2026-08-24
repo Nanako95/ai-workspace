@@ -117,3 +117,16 @@
 - platform/little-ledger/supabase-schema.sql
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Add cross-platform PWA share import for mobile receipts
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/Dockerfile
+- platform/little-ledger/README.md
+- platform/little-ledger/app.js
+- platform/little-ledger/index.html
+- platform/little-ledger/server.mjs
+- platform/little-ledger/icon.svg
+- platform/little-ledger/manifest.webmanifest
+- platform/little-ledger/service-worker.js
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
