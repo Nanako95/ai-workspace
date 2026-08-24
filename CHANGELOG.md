@@ -72,3 +72,11 @@
 - platform/little-ledger/README.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Sync platform documentation and publish the live little ledger URL
+- Target: .
+- Changed paths:
+- README.md
+- platform/README.md
+- \344\275\277\347\224\250\344\270\216\346\233\264\346\226\260\346\214\207\345\215\227.md
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
