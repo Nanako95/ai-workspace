@@ -72,7 +72,7 @@ const server = http.createServer(async (req, res) => {
         return json(res, 200, { ok: true, storage: 'supabase' });
       } catch (error) {
         console.error(`[health] Supabase connection failed: ${error.message}`);
-        return json(res, 503, { ok: false, storage: 'supabase', error: 'Supabase 连接失败' });
+        return json(res, 503, { ok: false, storage: 'supabase', error: 'Supabase 连接失败', detail: error.message });
       }
     }
     if (url.pathname === '/api/rates' && req.method === 'GET') {

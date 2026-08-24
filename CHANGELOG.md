@@ -99,3 +99,9 @@
 - platform/little-ledger/server.mjs
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Expose safe Supabase health error detail
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/server.mjs
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
