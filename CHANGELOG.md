@@ -87,3 +87,9 @@
 - platform/little-ledger/app.js
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Fix duplicate cloud login and synchronize ledger deletes
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/app.js
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
