@@ -65,6 +65,16 @@ const server = http.createServer(async (req, res) => {
       await saveDb(db);
       return json(res, 200, { username: name, records: db.users[name].records, mode: existing ? 'login' : 'register' });
     }
+    if (url.pathname === '/api/health' && req.method === 'GET') {
+      if (!cloudDbEnabled) return json(res, 503, { ok: false, storage: 'local', error: 'Supabase 环境变量未配置' });
+      try {
+        await supabaseRequest('ledger_users?select=username&limit=1');
+        return json(res, 200, { ok: true, storage: 'supabase' });
+      } catch (error) {
+        console.error(`[health] Supabase connection failed: ${error.message}`);
+        return json(res, 503, { ok: false, storage: 'supabase', error: 'Supabase 连接失败' });
+      }
+    }
     if (url.pathname === '/api/rates' && req.method === 'GET') {
       const base = (url.searchParams.get('base') || 'CNY').toUpperCase();
       const symbols = (url.searchParams.get('symbols') || 'CNY,USD,EUR,JPY,HKD,GBP,KRW,SGD,AUD,CAD,CHF').toUpperCase().split(',').filter(Boolean).slice(0, 20);
@@ -111,6 +121,9 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, {'content-type': mime[path.extname(filePath)] || 'application/octet-stream'}); res.end(await readFile(filePath)); return;
     }
     json(res, 404, { error: 'Not found' });
-  } catch (error) { json(res, 500, { error: '服务器暂时不可用', detail: error.message }); }
+  } catch (error) {
+    console.error(`[request] ${req.method} ${req.url} failed: ${error.message}`);
+    json(res, 500, { error: '服务器暂时不可用', detail: error.message });
+  }
 });
 server.listen(port, '0.0.0.0', () => console.log(`Little Ledger listening on http://0.0.0.0:${port}`));

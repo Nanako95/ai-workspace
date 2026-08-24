@@ -93,3 +93,9 @@
 - platform/little-ledger/app.js
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Add Supabase health check and Render request error logging
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/server.mjs
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
