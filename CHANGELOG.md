@@ -51,3 +51,9 @@
 - platform/dataflow-studio/src/main.jsx
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Add mobile cloud ledger with OCR, currency conversion, and deployment files
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+

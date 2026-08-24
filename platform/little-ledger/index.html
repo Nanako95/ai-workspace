@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f4ef" />
+  <title>小账本 · 每一笔都清楚</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="camera.css" />
+  <link rel="stylesheet" href="ocr.css" />
+</head>
+<body>
+  <div id="authView" class="auth-shell">
+    <div class="auth-mark">小<span>账</span>本</div>
+    <div class="auth-copy"><p class="eyebrow">PERSONAL MONEY JOURNAL</p><h1>把钱花在哪里，<br><em>一眼就知道。</em></h1><p>一款为手机设计的轻量记账工具。截图识别、分类整理、看懂自己的消费习惯。</p></div>
+    <form id="loginForm" class="auth-form"><label for="username">你的用户名</label><input id="username" autocomplete="username" placeholder="例如：xiaoming" maxlength="20" required /><label for="password">密码</label><div class="password-field"><input id="password" type="password" autocomplete="current-password" placeholder="英文 + 数字，至少 6 位" minlength="6" pattern="(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,100}" title="密码需包含英文和数字，至少 6 位" required /><button id="togglePassword" class="password-toggle" type="button" title="显示或隐藏密码" aria-label="显示密码"><i data-lucide="eye"></i></button></div><div id="loginError" class="login-error" role="alert"></div><button class="primary-btn" type="submit">登录 / 首次注册 <i data-lucide="arrow-up-right"></i></button><small>首次使用用户名和密码会自动注册；密码需包含英文和数字，至少 6 位。</small></form>
+  </div>
+
+  <div id="appView" class="app-shell hidden">
+    <header class="topbar"><div><div class="brand">小账本</div><div id="greeting" class="muted"></div></div><button id="logoutBtn" class="icon-btn" title="切换账户"><i data-lucide="log-out"></i></button></header>
+    <main>
+      <section id="homeTab" class="tab-page active">
+        <div class="hero-row"><div><p class="eyebrow">OVERVIEW · <span id="currentMonth"></span></p><h2>你好，<span id="userName"></span></h2></div><button id="quickAdd" class="round-add" title="新增账目"><i data-lucide="plus"></i></button></div>
+        <div class="balance-card"><div><span class="label">本月实际结余</span><strong id="monthBalance">¥0.00</strong></div><div class="balance-meta"><span id="monthIncome">收入 ¥0</span><span id="monthExpense">支出 ¥0</span></div></div>
+        <div class="section-head"><h3>快捷记账</h3><span class="muted">今天 · <span id="todayLabel"></span></span></div>
+        <div class="quick-grid"><button class="quick-item" data-type="expense" data-cat="吃喝"><span class="quick-icon coral">🍜</span><b>吃喝</b><small>记录一笔</small></button><button class="quick-item" data-type="expense" data-cat="交通"><span class="quick-icon blue">↗</span><b>交通</b><small>记录一笔</small></button><button class="quick-item" data-type="expense" data-cat="日常"><span class="quick-icon green">⌁</span><b>日常</b><small>记录一笔</small></button><button class="quick-item" data-type="income" data-cat="收入"><span class="quick-icon yellow">＋</span><b>收入</b><small>记录一笔</small></button></div>
+        <div class="section-head"><h3>最近记录</h3><button id="viewAll" class="text-btn">查看全部 <i data-lucide="chevron-right"></i></button></div>
+        <div id="recentList" class="transaction-list"></div>
+      </section>
+
+      <section id="ledgerTab" class="tab-page"><div class="page-title"><div><p class="eyebrow">LEDGER</p><h2>所有账目</h2></div><div class="capture-actions"><button id="cameraBtn" class="outline-btn"><i data-lucide="camera"></i> 拍照识别</button><button id="uploadBtn" class="outline-btn"><i data-lucide="image-up"></i> 选择截图</button><input id="receiptInput" type="file" accept="image/*" hidden></div></div><div class="filter-row"><button class="filter active" data-filter="all">全部</button><button class="filter" data-filter="expense">支出</button><button class="filter" data-filter="income">收入</button><select id="categoryFilter"><option value="all">全部分类</option></select></div><div id="ledgerList" class="transaction-list full"></div></section>
+
+      <section id="dashboardTab" class="tab-page"><div class="page-title"><div><p class="eyebrow">INSIGHTS</p><h2>消费看板</h2></div></div><div class="period-tabs"><button class="period active" data-period="month">月度</button><button class="period" data-period="year">年度</button><select id="periodSelect"></select></div><div id="dashboardContent"></div></section>
+    </main>
+    <nav class="bottom-nav"><button class="nav-item active" data-tab="homeTab"><i data-lucide="house"></i><span>首页</span></button><button class="nav-item" data-tab="ledgerTab"><i data-lucide="receipt-text"></i><span>账目</span></button><button class="nav-item" data-tab="dashboardTab"><i data-lucide="chart-no-axes-combined"></i><span>看板</span></button></nav>
+  </div>
+
+  <div id="entryModal" class="modal hidden"><div class="modal-backdrop"></div><form id="entryForm" class="modal-sheet"><div class="modal-handle"></div><div class="modal-head"><h3 id="modalTitle">新增一笔</h3><button type="button" class="icon-btn close-modal"><i data-lucide="x"></i></button></div><div class="type-switch"><button type="button" class="type-btn active" data-type="expense">支出</button><button type="button" class="type-btn" data-type="income">收入</button></div><label>金额 <input id="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required></label><div class="currency-row"><label>原始货币 <select id="sourceCurrency"></select></label><label>记账货币 <select id="targetCurrency"></select></label></div><div id="exchangePreview" class="exchange-preview">汇率加载后显示换算金额</div><label>分类 <select id="category" required></select></label><label>明细备注 <input id="note" maxlength="50" placeholder="例如：猪肉、地铁月票"></label><label>日期 <input id="date" type="date" required></label><div id="ocrStatus" class="ocr-status hidden"></div><div id="ocrItemsPreview" class="ocr-items hidden"></div><button class="primary-btn" type="submit">保存这笔记录 <i data-lucide="check"></i></button></form></div>
+  <div id="cameraModal" class="modal hidden"><div class="modal-backdrop camera-backdrop"></div><div class="camera-sheet"><div class="modal-handle"></div><div class="modal-head"><h3>拍照识别</h3><button type="button" class="icon-btn close-camera"><i data-lucide="x"></i></button></div><div class="camera-frame"><video id="cameraVideo" autoplay playsinline></video><div class="camera-guide">将账单金额放在框内</div></div><p class="camera-note">照片只在本次识别中使用，不会自动保存到手机相册。</p><button id="captureBtn" class="primary-btn" type="button"><i data-lucide="scan-line"></i>识别当前画面</button></div></div>
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
