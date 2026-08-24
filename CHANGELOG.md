@@ -65,3 +65,10 @@
 - platform/little-ledger/supabase-schema.sql
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Document the live Render URL
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/CHANGELOG.md
+- platform/little-ledger/README.md
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
