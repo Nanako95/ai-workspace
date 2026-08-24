@@ -11,6 +11,23 @@ const dbFile = path.join(dataDir, 'ledger.json');
 const port = Number(process.env.PORT || 4173);
 const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml'};
 const rateCache = new Map();
+const supabaseUrl = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const cloudDbEnabled = Boolean(supabaseUrl && supabaseKey);
+
+async function supabaseRequest(pathname, options = {}) {
+  const response = await fetch(`${supabaseUrl}/rest/v1/${pathname}`, {
+    ...options,
+    headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}`, 'content-type': 'application/json', ...(options.headers || {}) }
+  });
+  const raw = await response.text();
+  let data = null; try { data = raw ? JSON.parse(raw) : null; } catch { data = raw; }
+  if (!response.ok) throw new Error(data?.message || data?.error || `Supabase ${response.status}`);
+  return data;
+}
+function supabaseUser(name) { return `username=eq.${encodeURIComponent(name)}`; }
+function mapRecord(record) { return { id: record.id, type: record.type, amount: Number(record.amount), currency: record.currency || 'CNY', sourceAmount: Number(record.source_amount ?? record.amount), sourceCurrency: record.source_currency || 'CNY', exchangeRate: Number(record.exchange_rate || 1), category: record.category, note: record.note, date: record.date }; }
+async function cloudRecords(username) { const rows = await supabaseRequest(`ledger_records?${supabaseUser(username)}&select=*&order=created_at.desc`); return rows.map(mapRecord); }
 
 async function loadDb() {
   await mkdir(dataDir, { recursive: true });
@@ -33,6 +50,14 @@ const server = http.createServer(async (req, res) => {
       const input = await body(req); const name = safeName(input.username); const password = passwordText(input.password);
       if (!name) return json(res, 400, { error: '用户名只能包含中文、字母、数字、下划线或短横线，长度 1-20。' });
       if (!password) return json(res, 400, { error: '密码需包含英文和数字，长度至少 6 位。' });
+      if (cloudDbEnabled) {
+        const users = await supabaseRequest(`ledger_users?${supabaseUser(name)}&select=username,password_hash`);
+        const existing = users[0];
+        if (existing && !(await verifyPassword(password, existing.password_hash))) return json(res, 401, { error: '用户名已存在，请更换用户名，或输入该用户名的正确密码。' });
+        if (!existing) await supabaseRequest('ledger_users', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ username: name, password_hash: await hashPassword(password) }) });
+        const cloudRows = await cloudRecords(name);
+        return json(res, 200, { username: name, records: cloudRows, mode: existing ? 'login' : 'register' });
+      }
       const existing = db.users[name];
       if (existing?.passwordHash && !(await verifyPassword(password, existing.passwordHash))) return json(res, 401, { error: '用户名已存在，请更换用户名，或输入该用户名的正确密码。' });
       if (!existing) db.users[name] = { username: name, passwordHash: await hashPassword(password), records: [], createdAt: new Date().toISOString() };
@@ -54,6 +79,16 @@ const server = http.createServer(async (req, res) => {
     const match = url.pathname.match(/^\/api\/users\/([^/]+)\/records(?:\/([^/]+))?$/);
     if (match) {
       const username = decodeURIComponent(match[1]);
+      if (cloudDbEnabled) {
+        if (req.method === 'GET' && !match[2]) return json(res, 200, await cloudRecords(username));
+        if (req.method === 'POST' && !match[2]) {
+          const item = await body(req);
+          if (!['income','expense'].includes(item.type) || !Number.isFinite(Number(item.amount)) || !item.category || !item.date) return json(res, 400, { error: '账目字段不完整' });
+          const rows = await supabaseRequest('ledger_records', { method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify({ username, type: item.type, amount: Number(item.amount), currency: item.currency || 'CNY', source_amount: Number(item.sourceAmount ?? item.amount), source_currency: item.sourceCurrency || 'CNY', exchange_rate: Number(item.exchangeRate || 1), category: String(item.category), note: String(item.note || item.category).slice(0, 50), date: String(item.date) }) });
+          return json(res, 201, mapRecord(rows[0]));
+        }
+        if (req.method === 'DELETE' && match[2]) { await supabaseRequest(`ledger_records?id=eq.${encodeURIComponent(match[2])}&${supabaseUser(username)}`, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }); return json(res, 200, { ok: true }); }
+      }
       const account = db.users[username];
       if (!account) return json(res, 404, { error: '账户不存在' });
       if (req.method === 'GET' && !match[2]) return json(res, 200, account.records);
