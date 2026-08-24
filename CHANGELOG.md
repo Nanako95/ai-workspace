@@ -105,3 +105,9 @@
 - platform/little-ledger/server.mjs
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Support Supabase secret keys without JWT authorization
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/server.mjs
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+

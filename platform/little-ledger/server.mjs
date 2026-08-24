@@ -16,9 +16,10 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const cloudDbEnabled = Boolean(supabaseUrl && supabaseKey);
 
 async function supabaseRequest(pathname, options = {}) {
+  const authHeaders = supabaseKey.startsWith('sb_secret_') ? {} : { Authorization: `Bearer ${supabaseKey}` };
   const response = await fetch(`${supabaseUrl}/rest/v1/${pathname}`, {
     ...options,
-    headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}`, 'content-type': 'application/json', ...(options.headers || {}) }
+    headers: { apikey: supabaseKey, ...authHeaders, 'content-type': 'application/json', ...(options.headers || {}) }
   });
   const raw = await response.text();
   let data = null; try { data = raw ? JSON.parse(raw) : null; } catch { data = raw; }
