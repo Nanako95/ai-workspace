@@ -14,6 +14,8 @@ const rateCache = new Map();
 const supabaseUrl = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const cloudDbEnabled = Boolean(supabaseUrl && supabaseKey);
+const sessionSecret = process.env.SESSION_SECRET || supabaseKey || 'little-ledger-development-session-secret';
+const sessionTtlSeconds = 24 * 60 * 60;
 
 async function supabaseRequest(pathname, options = {}) {
   const authHeaders = supabaseKey.startsWith('sb_secret_') ? {} : { Authorization: `Bearer ${supabaseKey}` };
@@ -36,17 +38,25 @@ async function loadDb() {
   try { return JSON.parse(await readFile(dbFile, 'utf8')); } catch { return { users: {} }; }
 }
 async function saveDb(db) { await writeFile(dbFile, JSON.stringify(db, null, 2), 'utf8'); }
-function json(res, status, body) { res.writeHead(status, {'content-type': mime['.json'], 'cache-control':'no-store'}); res.end(JSON.stringify(body)); }
+function json(res, status, body, headers = {}) { res.writeHead(status, {'content-type': mime['.json'], 'cache-control':'no-store', ...headers}); res.end(JSON.stringify(body)); }
 async function body(req) { let raw=''; for await (const chunk of req) raw += chunk; return raw ? JSON.parse(raw) : {}; }
 function safeName(name) { return typeof name === 'string' && /^[\p{L}\p{N}_-]{1,20}$/u.test(name.trim()) ? name.trim() : null; }
 function passwordText(value) { return typeof value === 'string' && /^[A-Za-z\d]{6,100}$/.test(value) && /[A-Za-z]/.test(value) && /\d/.test(value) ? value : null; }
 function hashPassword(password, salt = crypto.randomBytes(16).toString('hex')) { return new Promise((resolve, reject) => crypto.scrypt(password, salt, 64, (err, derived) => err ? reject(err) : resolve(`${salt}:${derived.toString('hex')}`))); }
 async function verifyPassword(password, stored) { if (!stored) return false; const [salt, expected] = stored.split(':'); const actual = await hashPassword(password, salt); return crypto.timingSafeEqual(Buffer.from(actual.split(':')[1], 'hex'), Buffer.from(expected, 'hex')); }
+function sessionCookie(username, maxAge = sessionTtlSeconds) { const payload = Buffer.from(JSON.stringify({ username, expires: Date.now() + maxAge * 1000 })).toString('base64url'); const signature = crypto.createHmac('sha256', sessionSecret).update(payload).digest('base64url'); return `ledger_session=${payload}.${signature}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`; }
+function sessionUsername(req) { const raw = (req.headers.cookie || '').split(';').map(part => part.trim()).find(part => part.startsWith('ledger_session='))?.slice('ledger_session='.length); if (!raw) return null; const [payload, signature] = raw.split('.'); if (!payload || !signature) return null; const expected = crypto.createHmac('sha256', sessionSecret).update(payload).digest('base64url'); if (signature.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) return null; try { const session = JSON.parse(Buffer.from(payload, 'base64url').toString()); return session.expires > Date.now() ? safeName(session.username) : null; } catch { return null; } }
 
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const db = await loadDb();
+    if (url.pathname === '/api/account' && req.method === 'GET') {
+      const name = sessionUsername(req); if (!name) return json(res, 401, { error: '登录已过期，请重新登录。' });
+      const records = cloudDbEnabled ? await cloudRecords(name) : (db.users[name]?.records || null);
+      if (records === null) return json(res, 401, { error: '登录已过期，请重新登录。' });
+      return json(res, 200, { username: name, records, mode: 'session' });
+    }
     if (url.pathname === '/api/account' && req.method === 'POST') {
       const input = await body(req); const name = safeName(input.username); const password = passwordText(input.password);
       if (!name) return json(res, 400, { error: '用户名只能包含中文、字母、数字、下划线或短横线，长度 1-20。' });
@@ -57,15 +67,16 @@ const server = http.createServer(async (req, res) => {
         if (existing && !(await verifyPassword(password, existing.password_hash))) return json(res, 401, { error: '用户名已存在，请更换用户名，或输入该用户名的正确密码。' });
         if (!existing) await supabaseRequest('ledger_users', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ username: name, password_hash: await hashPassword(password) }) });
         const cloudRows = await cloudRecords(name);
-        return json(res, 200, { username: name, records: cloudRows, mode: existing ? 'login' : 'register' });
+        return json(res, 200, { username: name, records: cloudRows, mode: existing ? 'login' : 'register' }, { 'set-cookie': sessionCookie(name) });
       }
       const existing = db.users[name];
       if (existing?.passwordHash && !(await verifyPassword(password, existing.passwordHash))) return json(res, 401, { error: '用户名已存在，请更换用户名，或输入该用户名的正确密码。' });
       if (!existing) db.users[name] = { username: name, passwordHash: await hashPassword(password), records: [], createdAt: new Date().toISOString() };
       else if (!existing.passwordHash) existing.passwordHash = await hashPassword(password);
       await saveDb(db);
-      return json(res, 200, { username: name, records: db.users[name].records, mode: existing ? 'login' : 'register' });
+      return json(res, 200, { username: name, records: db.users[name].records, mode: existing ? 'login' : 'register' }, { 'set-cookie': sessionCookie(name) });
     }
+    if (url.pathname === '/api/logout' && req.method === 'POST') return json(res, 200, { ok: true }, { 'set-cookie': sessionCookie('', 0) });
     if (url.pathname === '/api/health' && req.method === 'GET') {
       if (!cloudDbEnabled) return json(res, 503, { ok: false, storage: 'local', error: 'Supabase 环境变量未配置' });
       try {

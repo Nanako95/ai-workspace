@@ -143,3 +143,11 @@
 - platform/little-ledger/service-worker.js
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Keep login sessions for 24 hours
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/README.md
+- platform/little-ledger/app.js
+- platform/little-ledger/server.mjs
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
