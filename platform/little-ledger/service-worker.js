@@ -4,8 +4,18 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
+async function cleanupSharedCache() {
+  const cache = await caches.open(SHARE_CACHE);
+  const requests = await cache.keys();
+  for (const request of requests) {
+    const response = await cache.match(request);
+    const createdAt = Number(response?.headers.get('x-shared-at') || 0);
+    if (!createdAt || Date.now() - createdAt > 24 * 60 * 60 * 1000) await cache.delete(request);
+  }
+}
+
 self.addEventListener('activate', event => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(Promise.all([self.clients.claim(), cleanupSharedCache()]));
 });
 
 self.addEventListener('fetch', event => {
@@ -19,7 +29,7 @@ self.addEventListener('fetch', event => {
       const cache = await caches.open(SHARE_CACHE);
       for (const file of files.slice(0, 5)) {
         const id = crypto.randomUUID();
-        await cache.put(`/shared-import/${id}`, new Response(file, { headers: { 'Content-Type': file.type || 'application/octet-stream' } }));
+        await cache.put(`/shared-import/${id}`, new Response(file, { headers: { 'Content-Type': file.type || 'application/octet-stream', 'x-shared-at': String(Date.now()) } }));
         ids.push(id);
       }
       const text = form.get('text') || form.get('title') || form.get('url') || '';

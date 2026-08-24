@@ -137,3 +137,9 @@
 - platform/little-ledger/README.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Clean up stale temporary share imports
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/service-worker.js
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
