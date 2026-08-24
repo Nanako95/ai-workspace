@@ -130,3 +130,10 @@
 - platform/little-ledger/service-worker.js
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Document Android and iPhone share import usage
+- Target: platform
+- Changed paths:
+- platform/README.md
+- platform/little-ledger/README.md
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
