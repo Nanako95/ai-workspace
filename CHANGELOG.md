@@ -80,3 +80,10 @@
 - \344\275\277\347\224\250\344\270\216\346\233\264\346\226\260\346\214\207\345\215\227.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Allow ledger saves when exchange rates are temporarily unavailable
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/CHANGELOG.md
+- platform/little-ledger/app.js
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
