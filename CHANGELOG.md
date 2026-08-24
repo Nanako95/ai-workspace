@@ -111,3 +111,9 @@
 - platform/little-ledger/server.mjs
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-24 - Grant Supabase service role access to ledger tables
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/supabase-schema.sql
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+

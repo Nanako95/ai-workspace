@@ -26,5 +26,9 @@ create index if not exists ledger_records_username_created_idx
 alter table public.ledger_users enable row level security;
 alter table public.ledger_records enable row level security;
 
+-- Supabase 新项目可能不会自动授予 Data API 的 service_role 表权限。
+grant usage on schema public to service_role;
+grant select, insert, update, delete on public.ledger_users, public.ledger_records to service_role;
+
 -- 浏览器不直接访问 Supabase；Node 服务使用 service_role key 访问。
 -- 因此这里不开放 anon policy，避免绕过本项目的用户名+密码登录。
