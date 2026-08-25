@@ -36,27 +36,64 @@ alter table public.ledger_users
 
 ## Supabase 数据清理
 
-先在 Supabase Table Editor 导出需要保留的数据。以下命令在 SQL Editor 执行，删除操作不可恢复：
+### 先判断要清理什么
+
+先在 Supabase Table Editor 导出需要保留的数据。以下命令都在 Supabase 的 **SQL Editor** 中执行，删除操作不可恢复；不要删除表本身或 `categories` 字段。
 
 ```sql
--- 查看数量
+-- 1. 查看账户和账目数量
 select count(*) from public.ledger_users;
 select count(*) from public.ledger_records;
 
--- 只清空某个账户的账目，保留账户和密码
-delete from public.ledger_records where username = '你的用户名';
+-- 2. 查看每个账户各有多少账目，先定位测试账户
+select username, count(*) as record_count
+from public.ledger_records
+group by username
+order by record_count desc;
+```
 
--- 删除某个账户及其账目（外键 on delete cascade）
-delete from public.ledger_users where username = '你的用户名';
+### 只清理一个账户
 
--- 清空所有账目，但保留所有账户
+保留账户和密码，只删除该用户的账目：
+
+```sql
+delete from public.ledger_records
+where username = '你的用户名';
+```
+
+如果要连账户一起删除，执行下面这条即可；由于外键设置了 `on delete cascade`，该用户的账目也会一起删除：
+
+```sql
+delete from public.ledger_users
+where username = '你的用户名';
+```
+
+### 清理全部测试账目
+
+保留所有账户，只清空账目表。适合项目测试数据太多的情况：
+
+```sql
 truncate table public.ledger_records;
+```
 
--- 整个项目重新开始：账户和账目都会删除
+### 彻底重置项目
+
+账户、密码、分类和所有账目都会删除。执行后需要重新注册账户：
+
+```sql
 truncate table public.ledger_records, public.ledger_users;
 ```
 
-免费计划的空间不足时，优先删除测试账户和测试账目，不要删除表结构。删除后重新打开 `/api/health` 检查服务，网页刷新即可重新登录或注册。
+### 清理后检查
+
+清理后可以执行：
+
+```sql
+select count(*) from public.ledger_users;
+select count(*) from public.ledger_records;
+```
+
+然后打开 `https://你的服务.onrender.com/api/health`，确认返回 `"ok": true` 和 `"storage": "supabase"`。网页刷新后即可继续使用。免费计划空间不足时，优先删除测试账户和测试账目，不要删除表结构。
 
 ## 手机使用
 

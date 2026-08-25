@@ -6,6 +6,8 @@
 
 完整的 GitHub -> Render -> Supabase 配置、分类字段迁移、发布和数据清理说明见 [`DEPLOYMENT-GUIDE.md`](DEPLOYMENT-GUIDE.md)。
 
+数据空间不足时，直接看 [`DEPLOYMENT-GUIDE.md` 的 Supabase 数据清理章节](DEPLOYMENT-GUIDE.md#supabase-数据清理)。正式使用建议先导出数据，再清理测试账目。
+
 ## 在线使用
 
 直接打开：<https://little-ledger.onrender.com/>

@@ -183,3 +183,10 @@
 - platform/little-ledger/ocr.css
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-25 - Document Supabase storage inspection and cleanup procedures
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/DEPLOYMENT-GUIDE.md
+- platform/little-ledger/README.md
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
