@@ -1,0 +1,4 @@
+runtime/
+data/projects.backup.json
+data/reports/*.png
+*.log

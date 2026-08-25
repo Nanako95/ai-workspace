@@ -1,0 +1,99 @@
+{
+  "app": "Project Pilot",
+  "version": 3,
+  "savedAt": "2026-08-25T00:00:00.000Z",
+  "settings": {
+    "brandName": "Project Pilot",
+    "brandSubtitle": "项目管理工作台",
+    "pageNames": {
+      "summary": "项目总结",
+      "timeline": "项目进度",
+      "projects": "项目明细",
+      "report": "周会汇报",
+      "admin": "后台管理"
+    }
+  },
+  "categories": [
+    { "id": "demo-digital", "name": "数字化建设", "color": "#167d75" },
+    { "id": "demo-product", "name": "产品研发", "color": "#2f6fed" },
+    { "id": "demo-operations", "name": "运营优化", "color": "#b7791f" }
+  ],
+  "systems": [
+    { "id": "demo-portal", "name": "业务门户" },
+    { "id": "demo-data", "name": "数据平台" },
+    { "id": "demo-workflow", "name": "流程中心" }
+  ],
+  "projects": [
+    {
+      "id": "demo-project-001",
+      "code": "DEMO-001",
+      "name": "智能仓储改造",
+      "planName": "仓储系统一期",
+      "categoryId": "demo-digital",
+      "category": "数字化建设",
+      "owner": "陈晨",
+      "priority": "高",
+      "start": "2026-08-01",
+      "end": "2026-10-20",
+      "progress": 54,
+      "status": "有风险",
+      "blockers": "设备接口协议尚未确认，联调排期存在不确定性。",
+      "notes": "本周完成接口清单评审。",
+      "dependencyNote": "等待供应商确认接口文档。",
+      "systemIds": ["demo-portal", "demo-data"],
+      "dependsOn": [],
+      "milestones": [
+        { "id": "demo-milestone-001", "name": "需求冻结", "date": "2026-08-18", "status": "已完成" },
+        { "id": "demo-milestone-002", "name": "设备到场", "date": "2026-09-05", "status": "进行中" },
+        { "id": "demo-milestone-003", "name": "系统联调", "date": "2026-09-28", "status": "未开始" }
+      ]
+    },
+    {
+      "id": "demo-project-002",
+      "code": "DEMO-002",
+      "name": "会员增长小程序",
+      "planName": "灰度发布与优化",
+      "categoryId": "demo-product",
+      "category": "产品研发",
+      "owner": "林晓",
+      "priority": "高",
+      "start": "2026-08-10",
+      "end": "2026-09-30",
+      "progress": 72,
+      "status": "进行中",
+      "blockers": "",
+      "notes": "核心链路已进入灰度。",
+      "dependencyNote": "",
+      "systemIds": ["demo-portal", "demo-workflow"],
+      "dependsOn": [],
+      "milestones": [
+        { "id": "demo-milestone-004", "name": "交互定稿", "date": "2026-08-15", "status": "已完成" },
+        { "id": "demo-milestone-005", "name": "全量上线", "date": "2026-09-25", "status": "未开始" }
+      ]
+    },
+    {
+      "id": "demo-project-003",
+      "code": "DEMO-003",
+      "name": "供应商准入优化",
+      "planName": "高频品类试点",
+      "categoryId": "demo-operations",
+      "category": "运营优化",
+      "owner": "周远",
+      "priority": "中",
+      "start": "2026-08-20",
+      "end": "2026-11-15",
+      "progress": 12,
+      "status": "进行中",
+      "blockers": "",
+      "notes": "先从高频采购品类试点。",
+      "dependencyNote": "",
+      "systemIds": ["demo-workflow"],
+      "dependsOn": [],
+      "milestones": [
+        { "id": "demo-milestone-006", "name": "流程盘点", "date": "2026-09-01", "status": "进行中" },
+        { "id": "demo-milestone-007", "name": "试点上线", "date": "2026-10-10", "status": "未开始" }
+      ]
+    }
+  ],
+  "reports": []
+}

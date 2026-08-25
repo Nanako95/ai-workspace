@@ -190,3 +190,9 @@
 - platform/little-ledger/README.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-25 - Add the Project Pilot local project management app with sanitized demo data
+- Target: platform\project-pilot
+- Changed paths:
+- platform/project-pilot/
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
