@@ -2,6 +2,10 @@
 
 移动端记账网站，支持网页内拍照识别、截图识别、多语言逐行 OCR、用户名账户、密码登录、云端账目同步和货币转换。
 
+分类支持当前账户独立新增和改名。设置会随用户名同步到云端；改名会同步当前账户已有账目，不会影响其他账户。
+
+完整的 GitHub -> Render -> Supabase 配置、分类字段迁移、发布和数据清理说明见 [`DEPLOYMENT-GUIDE.md`](DEPLOYMENT-GUIDE.md)。
+
 ## 在线使用
 
 直接打开：<https://little-ledger.onrender.com/>

@@ -160,3 +160,16 @@
 - platform/little-ledger/index.html
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-25 - Make categories account-scoped and document GitHub Render Supabase setup and cleanup
+- Target: platform
+- Changed paths:
+- platform/README.md
+- platform/little-ledger/README.md
+- platform/little-ledger/app.js
+- platform/little-ledger/index.html
+- platform/little-ledger/server.mjs
+- platform/little-ledger/styles.css
+- platform/little-ledger/supabase-schema.sql
+- platform/little-ledger/DEPLOYMENT-GUIDE.md
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+

@@ -2,8 +2,13 @@
 create table if not exists public.ledger_users (
   username text primary key check (char_length(username) between 1 and 20),
   password_hash text not null,
+  categories jsonb not null default '["娱乐","吃喝","房租","衣服","日常","交通","医疗","学习","其他"]'::jsonb,
   created_at timestamptz not null default now()
 );
+
+-- 已有项目安全补字段；分类属于每个 username，不是全局设置。
+alter table public.ledger_users
+  add column if not exists categories jsonb not null default '["娱乐","吃喝","房租","衣服","日常","交通","医疗","学习","其他"]'::jsonb;
 
 create table if not exists public.ledger_records (
   id uuid primary key default gen_random_uuid(),

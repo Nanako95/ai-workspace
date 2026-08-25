@@ -16,6 +16,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const cloudDbEnabled = Boolean(supabaseUrl && supabaseKey);
 const sessionSecret = process.env.SESSION_SECRET || supabaseKey || 'little-ledger-development-session-secret';
 const sessionTtlSeconds = 24 * 60 * 60;
+const defaultCategories = ['娱乐','吃喝','房租','衣服','日常','交通','医疗','学习','其他'];
 
 async function supabaseRequest(pathname, options = {}) {
   const authHeaders = supabaseKey.startsWith('sb_secret_') ? {} : { Authorization: `Bearer ${supabaseKey}` };
@@ -30,7 +31,9 @@ async function supabaseRequest(pathname, options = {}) {
 }
 function supabaseUser(name) { return `username=eq.${encodeURIComponent(name)}`; }
 function mapRecord(record) { return { id: record.id, type: record.type, amount: Number(record.amount), currency: record.currency || 'CNY', sourceAmount: Number(record.source_amount ?? record.amount), sourceCurrency: record.source_currency || 'CNY', exchangeRate: Number(record.exchange_rate || 1), category: record.category, note: record.note, date: record.date }; }
+function cleanCategories(value) { const list = Array.isArray(value) ? value : defaultCategories; return [...new Set(list.filter(item => typeof item === 'string' && /^[^\s]{1,20}$/.test(item.trim())).map(item => item.trim()))].slice(0, 50); }
 async function cloudRecords(username) { const rows = await supabaseRequest(`ledger_records?${supabaseUser(username)}&select=*&order=created_at.desc`); return rows.map(mapRecord); }
+async function cloudCategories(username) { try { return cleanCategories((await supabaseRequest(`ledger_users?${supabaseUser(username)}&select=categories`))[0]?.categories); } catch { return [...defaultCategories]; } }
 
 async function loadDb() {
   await mkdir(dataDir, { recursive: true });
@@ -55,28 +58,82 @@ const server = http.createServer(async (req, res) => {
       const name = sessionUsername(req); if (!name) return json(res, 401, { error: '登录已过期，请重新登录。' });
       const records = cloudDbEnabled ? await cloudRecords(name) : (db.users[name]?.records || null);
       if (records === null) return json(res, 401, { error: '登录已过期，请重新登录。' });
-      return json(res, 200, { username: name, records, mode: 'session' });
+      const categories = cloudDbEnabled
+        ? await cloudCategories(name)
+        : cleanCategories(db.users[name]?.categories);
+      return json(res, 200, { username: name, records, categories, mode: 'session' });
     }
     if (url.pathname === '/api/account' && req.method === 'POST') {
       const input = await body(req); const name = safeName(input.username); const password = passwordText(input.password);
       if (!name) return json(res, 400, { error: '用户名只能包含中文、字母、数字、下划线或短横线，长度 1-20。' });
       if (!password) return json(res, 400, { error: '密码需包含英文和数字，长度至少 6 位。' });
       if (cloudDbEnabled) {
-        const users = await supabaseRequest(`ledger_users?${supabaseUser(name)}&select=username,password_hash`);
+        let users;
+        try { users = await supabaseRequest(`ledger_users?${supabaseUser(name)}&select=username,password_hash,categories`); }
+        catch { users = await supabaseRequest(`ledger_users?${supabaseUser(name)}&select=username,password_hash`); }
         const existing = users[0];
         if (existing && !(await verifyPassword(password, existing.password_hash))) return json(res, 401, { error: '用户名已存在，请更换用户名，或输入该用户名的正确密码。' });
-        if (!existing) await supabaseRequest('ledger_users', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ username: name, password_hash: await hashPassword(password) }) });
+        if (!existing) {
+          const passwordHash = await hashPassword(password);
+          try { await supabaseRequest('ledger_users', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ username: name, password_hash: passwordHash, categories: defaultCategories }) }); }
+          catch { await supabaseRequest('ledger_users', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ username: name, password_hash: passwordHash }) }); }
+        }
         const cloudRows = await cloudRecords(name);
-        return json(res, 200, { username: name, records: cloudRows, mode: existing ? 'login' : 'register' }, { 'set-cookie': sessionCookie(name) });
+        return json(res, 200, { username: name, records: cloudRows, categories: cleanCategories(existing?.categories), mode: existing ? 'login' : 'register' }, { 'set-cookie': sessionCookie(name) });
       }
       const existing = db.users[name];
       if (existing?.passwordHash && !(await verifyPassword(password, existing.passwordHash))) return json(res, 401, { error: '用户名已存在，请更换用户名，或输入该用户名的正确密码。' });
-      if (!existing) db.users[name] = { username: name, passwordHash: await hashPassword(password), records: [], createdAt: new Date().toISOString() };
+      if (!existing) db.users[name] = { username: name, passwordHash: await hashPassword(password), records: [], categories: [...defaultCategories], createdAt: new Date().toISOString() };
       else if (!existing.passwordHash) existing.passwordHash = await hashPassword(password);
+      if (!Array.isArray(existing?.categories)) db.users[name].categories = [...defaultCategories];
       await saveDb(db);
-      return json(res, 200, { username: name, records: db.users[name].records, mode: existing ? 'login' : 'register' }, { 'set-cookie': sessionCookie(name) });
+      return json(res, 200, { username: name, records: db.users[name].records, categories: cleanCategories(db.users[name].categories), mode: existing ? 'login' : 'register' }, { 'set-cookie': sessionCookie(name) });
     }
     if (url.pathname === '/api/logout' && req.method === 'POST') return json(res, 200, { ok: true }, { 'set-cookie': sessionCookie('', 0) });
+    const categoryMatch = url.pathname.match(/^\/api\/users\/([^/]+)\/categories$/);
+    if (categoryMatch && (req.method === 'GET' || req.method === 'PUT')) {
+      const username = decodeURIComponent(categoryMatch[1]);
+      if (sessionUsername(req) !== username) return json(res, 401, { error: '登录已过期，请重新登录。' });
+      if (cloudDbEnabled) {
+        const users = await supabaseRequest(`ledger_users?${supabaseUser(username)}&select=categories`);
+        if (!users[0]) return json(res, 404, { error: '账户不存在' });
+        let categories = cleanCategories(users[0].categories);
+        if (req.method === 'PUT') {
+          const input = await body(req);
+          const action = String(input.action || '');
+          const oldName = typeof input.oldName === 'string' ? input.oldName.trim() : '';
+          const newName = typeof input.newName === 'string' ? input.newName.trim() : '';
+          if (!['add', 'rename'].includes(action) || !/^[^\s]{1,20}$/.test(newName)) return json(res, 400, { error: '分类名称需为 1-20 个不含空格的字符。' });
+          if (categories.includes(newName) && !(action === 'rename' && oldName === newName)) return json(res, 409, { error: '该分类已存在，请换一个名称。' });
+          if (action === 'rename') {
+            if (!categories.includes(oldName)) return json(res, 404, { error: '原分类不存在。' });
+            categories = categories.map(item => item === oldName ? newName : item);
+            await supabaseRequest(`ledger_records?${supabaseUser(username)}&category=eq.${encodeURIComponent(oldName)}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ category: newName }) });
+          } else categories = [...categories, newName];
+          await supabaseRequest(`ledger_users?${supabaseUser(username)}`, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ categories }) });
+        }
+        return json(res, 200, { categories });
+      }
+      const account = db.users[username];
+      if (!account) return json(res, 404, { error: '账户不存在' });
+      let categories = cleanCategories(account.categories);
+      if (req.method === 'PUT') {
+        const input = await body(req);
+        const action = String(input.action || '');
+        const oldName = typeof input.oldName === 'string' ? input.oldName.trim() : '';
+        const newName = typeof input.newName === 'string' ? input.newName.trim() : '';
+        if (!['add', 'rename'].includes(action) || !/^[^\s]{1,20}$/.test(newName)) return json(res, 400, { error: '分类名称需为 1-20 个不含空格的字符。' });
+        if (categories.includes(newName) && !(action === 'rename' && oldName === newName)) return json(res, 409, { error: '该分类已存在，请换一个名称。' });
+        if (action === 'rename') {
+          if (!categories.includes(oldName)) return json(res, 404, { error: '原分类不存在。' });
+          categories = categories.map(item => item === oldName ? newName : item);
+          account.records = account.records.map(record => record.category === oldName ? { ...record, category: newName } : record);
+        } else categories = [...categories, newName];
+        account.categories = categories;
+        await saveDb(db);
+      }
+      return json(res, 200, { categories });
+    }
     if (url.pathname === '/api/health' && req.method === 'GET') {
       if (!cloudDbEnabled) return json(res, 503, { ok: false, storage: 'local', error: 'Supabase 环境变量未配置' });
       try {
