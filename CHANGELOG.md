@@ -173,3 +173,13 @@
 - platform/little-ledger/DEPLOYMENT-GUIDE.md
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-25 - Improve multilingual receipt OCR, editable drafts, currency detection, and screenshot cropping
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/DEPLOYMENT-GUIDE.md
+- platform/little-ledger/README.md
+- platform/little-ledger/app.js
+- platform/little-ledger/index.html
+- platform/little-ledger/ocr.css
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
