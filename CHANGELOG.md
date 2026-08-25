@@ -206,3 +206,9 @@
 - platform/little-ledger/ocr.css
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-25 - Only retain original receipt text when translation changes
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/app.js
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
