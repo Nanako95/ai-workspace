@@ -26,3 +26,11 @@ body[data-theme="dark"] .workspace-tab.active, body[data-theme="dark"] .category
 .editor select { border: 1px solid var(--line); background: var(--surface-soft); color: var(--text); border-radius: 5px; padding: 10px; outline: 0; font-size: 13px; }
 body[data-compact="true"] .module-head { height: 46px; flex-basis: 46px; padding-top: 0; padding-bottom: 0; } body[data-compact="true"] .module-body { padding-top: 11px; padding-bottom: 11px; }
 @media (max-width: 640px) { .save-state { display: none; } .workspace-tabs-panel, .category-tabs-panel { margin-left: 0; margin-right: 0; } .workspace-tabs, .category-tabs { flex-wrap: nowrap; overflow-x: auto; } .tab-wrap, .category-wrap { flex: 0 0 auto; } }
+.inline-actions { display: inline-flex; align-items: center; gap: 2px; margin-left: auto; opacity: .8; }
+.inline-actions button { border: 0; background: transparent; color: var(--muted); width: 20px; height: 20px; border-radius: 4px; padding: 0; line-height: 1; }
+.inline-actions button:hover { color: var(--accent); background: var(--surface-soft); }
+.todo-list label { min-height: 23px; }
+.data-table .table-row.with-actions { grid-template-columns: 1.35fr .9fr .7fr 48px; }
+.stat-grid { align-items: stretch; }
+.stat-grid .inline-actions { display: flex; margin-top: 7px; margin-left: 0; }
+.field-list > span { align-items: center; gap: 6px; }

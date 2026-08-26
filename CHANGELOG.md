@@ -2,6 +2,13 @@
 
 本文件记录已发布到本仓库的主要更新。每次平台、skill 或说明文档更新并推送后，新增一条日期记录。
 
+## 2026-08-26 - Add CRUD controls for module contents
+
+- Target: `platform/modular-workbench`
+- Added content-level add, edit, and delete controls for todo items, table rows, stats metrics, and custom fields; note, document, and clock text remains editable through module settings.
+- Updated the project README with the content management workflow.
+- Validation: `npm run build`, browser check in edit mode, and `git diff --check`.
+
 ## 2026-08-26 - Improve workbench management and saved settings
 
 - Target: `platform/modular-workbench`
