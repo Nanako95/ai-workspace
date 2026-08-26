@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Documentation Sync"
+  short_description: "Keep GitHub project docs aligned with verified changes"
+  default_prompt: "Use $github-doc-sync to update project documentation, changelog, and publish the verified GitHub change."

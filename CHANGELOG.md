@@ -2,6 +2,13 @@
 
 本文件记录已发布到本仓库的主要更新。每次平台、skill 或说明文档更新并推送后，新增一条日期记录。
 
+## 2026-08-26 - Add GitHub documentation sync skill
+
+- Target: `skills/github-doc-sync`
+- Added a reusable workflow that keeps project README files, detailed guides, and the root changelog aligned with verified code changes before GitHub publication.
+- Updated `skills/README.md` with the new skill.
+- Validation: `quick_validate.py skills/github-doc-sync` and `git diff --check`.
+
 ## 2026-08-26 - Add modular workbench
 
 - Target: `platform/modular-workbench`

@@ -8,6 +8,7 @@ This directory contains reusable skills maintained for the AI workspace.
 - `browser-use`: Direct browser automation and extraction workflows.
 - `browsermcp-connect`: Connect and reconnect BrowserMCP in Chrome.
 - `github-auto-update`: Validate, document, commit, and publish verified repository updates.
+- `github-doc-sync`: Keep README, project guides, and the root changelog aligned with verified GitHub changes.
 - `smartchat-template-modifier`: Modify SmartChat WABA templates from structured inputs.
 - `test-list-update`: Reconcile WABA test lists with DataWorks source data.
 - `timekeeper`: Check time and schedule reminders or delayed tasks.
@@ -27,6 +28,7 @@ Secrets, browser profiles, caches, credentials, and business data are intentiona
 - `browser-use`：执行浏览器自动化、网页操作和数据提取。
 - `browsermcp-connect`：连接或重新连接 Chrome 中的 BrowserMCP。
 - `github-auto-update`：完成本地验证、变更记录、提交并安全发布 GitHub 仓库更新。
+- `github-doc-sync`：在代码变更发布前同步 README、项目说明文档和根目录变更记录。
 - `smartchat-template-modifier`：根据结构化输入修改 SmartChat WABA 消息模板。
 - `test-list-update`：根据 DataWorks 源数据核对和更新 WABA 测试名单。
 - `timekeeper`：查询时间并安排提醒或延迟任务。
