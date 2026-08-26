@@ -2,6 +2,13 @@
 
 本文件记录已发布到本仓库的主要更新。每次平台、skill 或说明文档更新并推送后，新增一条日期记录。
 
+## 2026-08-26 - Improve workbench management and saved settings
+
+- Target: `platform/modular-workbench`
+- Added editable and deletable page tabs, bordered module-category tabs with add/edit/delete controls, module reassignment, explicit workspace settings, and migration for existing local data.
+- Updated the project README with the new management and persistence workflow.
+- Validation: `npm run build`, local browser checks for page/category editing, settings save and reload persistence, and `git diff --check`.
+
 ## 2026-08-26 - Add GitHub documentation sync skill
 
 - Target: `skills/github-doc-sync`
