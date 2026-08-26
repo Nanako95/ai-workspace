@@ -2,6 +2,13 @@
 
 本文件记录已发布到本仓库的主要更新。每次平台、skill 或说明文档更新并推送后，新增一条日期记录。
 
+## 2026-08-26 - Keep module content actions visible
+
+- Target: `platform/modular-workbench`
+- Made add, edit, and delete controls for todo items, table rows, stats metrics, and custom fields visible in normal use; layout edit mode is now reserved for moving and resizing modules.
+- Updated the project README to clarify the content editing behavior.
+- Validation: `npm run build` and `git diff --check`.
+
 ## 2026-08-26 - Add CRUD controls for module contents
 
 - Target: `platform/modular-workbench`
