@@ -2,6 +2,13 @@
 
 本文件记录已发布到本仓库的主要更新。每次平台、skill 或说明文档更新并推送后，新增一条日期记录。
 
+## 2026-08-26 - Add modular workbench
+
+- Target: `platform/modular-workbench`
+- Added a configurable personal workbench with multiple pages, composable modules, editable content, grid layout editing, custom modules, local persistence, JSON backup, responsive styling, and dark mode.
+- Added `.github/workflows/deploy-modular-workbench.yml` for GitHub Pages deployment under the existing monorepo.
+- Validation: `npm run build`, local HTTP 200 check, and browser interaction checks for adding and editing a custom module.
+
 ## 2026-08-13 - Add GitHub auto-update skill
 
 - Target: `skills/github-auto-update`
