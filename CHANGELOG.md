@@ -228,3 +228,11 @@
 - platform/little-ledger/styles.css
 - Validation: git diff --check plus the project-specific checks reported by the AI.
 
+## 2026-08-26 - Improve smart category scoring for multilingual receipt items
+- Target: platform\little-ledger
+- Changed paths:
+- platform/little-ledger/DEPLOYMENT-GUIDE.md
+- platform/little-ledger/README.md
+- platform/little-ledger/app.js
+- Validation: git diff --check plus the project-specific checks reported by the AI.
+
